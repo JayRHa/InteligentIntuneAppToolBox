@@ -1,4 +1,6 @@
 msal
 openai
 loguru
-msal
+streamlit
+matplotlib
+azure-storage-blob
