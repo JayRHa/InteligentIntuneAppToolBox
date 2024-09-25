@@ -9,7 +9,7 @@ from modules.openai import OpenAi
 from modules.graph import set_description
 
 if "new_description" not in st.session_state:
-    st.session_state["new_description"] = None
+    st.session_state["new_description"] = "Optimized description will be shown here"
 
 
 def optimize_app_description(apps: Apps, bing: Bing, openAi: OpenAi):

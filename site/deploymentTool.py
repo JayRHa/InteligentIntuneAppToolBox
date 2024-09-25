@@ -4,17 +4,16 @@ import os
 import streamlit as st
 from loguru import logger
 
-
 from modules.functions import Apps
 from modules.openai import OpenAi
 from modules.blob import Blob
 from modules.bing import Bing
 
-from sites.app_details import show_app_details_page
-from sites.rollout_groups import show_rollout_groups
-from sites.app_description import optimize_app_description
-from sites.app_upload import upload_app
-from sites.client_log_summarizer import summarize_logfile
+from sitePages.app_details import show_app_details_page
+from sitePages.rollout_groups import show_rollout_groups
+from sitePages.app_description import optimize_app_description
+from sitePages.app_upload import upload_app
+from sitePages.client_log_summarizer import summarize_logfile
 
 from login_ui import login_ui
 # Configuration settings for your Azure AD app
