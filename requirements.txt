@@ -4,3 +4,5 @@ loguru
 streamlit
 matplotlib
 azure-storage-blob
+azure-devops
+msrest

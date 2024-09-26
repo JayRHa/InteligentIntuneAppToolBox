@@ -4,20 +4,46 @@ import os
 
 from azure.storage.blob import BlobServiceClient
 
-
 import streamlit as st
 from loguru import logger
 import json
-
 
 import os
 import streamlit as st
 from azure.storage.blob import BlobServiceClient
 
 from modules.openai import OpenAi
+from modules.azdevops import AzDevOps
 
 
-def upload_app(openai: OpenAi):
+def upload_app(openai: OpenAi, devops: AzDevOps):
+    st.subheader("DevOps Task")
+    st.selectbox("Select a commit", devops.get_commits())
+    st.subheader("Test a Commit")
+    if st.button("Test Commit"):
+        commit = {
+            "comment": "Test commit",
+            "changes": [
+                {
+                    "changeType": "add",
+                    "item": {
+                        "path": "Tasks1/Tasks2/README.md"
+                    },
+                    "newContent": {
+                        "content": "Test commit",
+                        "contentType": "rawtext"
+                    }
+                }
+            ]
+        }
+
+        request = devops.post_commit(commit)
+        st.write(request.status_code)
+        if request.status_code == 201:
+            st.success("Commit successful")
+
+
+
     """Upload app to Intune"""
     st.subheader("App package upload")
     CONNECTION_STRING = st.secrets["STORAG_CONNECTION_STRING"]
@@ -25,6 +51,18 @@ def upload_app(openai: OpenAi):
     upload_AppName = st.text_input("Enter the app name")
     upload_InstallCommands = st.text_input("Enter Installation Commands")
 
+    if st.button("Generate an AI Assisted detection PowerShell script"):
+
+        system = """You are an Senior Intune App Administrator. Your job is to detect an application installation. You should return the detection in a powershell script, with no other context or explination and without the ``` wrapper."""
+        prompt = f"""The app is called {upload_AppName}.
+the executable file is {uploaded_file.name}.
+"""
+        st.text_area(
+            label="## AI Generated Detection PowerShell Script",
+            value=openai.open_ai_run(
+                prompt=prompt, system=system
+            )
+        )
 
     if st.button("Generate an AI Assisted silent install command"):
 

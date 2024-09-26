@@ -8,6 +8,7 @@ from modules.functions import Apps
 from modules.openai import OpenAi
 from modules.blob import Blob
 from modules.bing import Bing
+from modules.azdevops import AzDevOps
 
 from sitePages.app_details import show_app_details_page
 from sitePages.rollout_groups import show_rollout_groups
@@ -33,6 +34,15 @@ blob = Blob(
     storage_account_key=os.getenv("STORAGE_ACCOUNT_KEY", ""),
     container_name=os.getenv("CONTAINER_NAME", ""),
 )
+
+devops = AzDevOps(
+    PAT=os.getenv("AZURE_DEVOPS_PAT", ""),
+    Organization=os.getenv("AZURE_DEVOPS_ORG", ""),
+    Project=os.getenv("AZURE_DEVOPS_PROJECT", ""),
+    Repository=os.getenv("AZURE_DEVOPS_REPO", ""),
+    Branch=os.getenv("AZURE_DEVOPS_BRANCH", ""),
+)
+
 
 bing = Bing(secret=os.getenv("BING_SECRET", ""))
 
@@ -76,7 +86,7 @@ def main():
         elif app_mode == "App Description Creator":
             optimize_app_description(apps=apps, bing=bing, openAi=openai)
         elif app_mode == "App Uploaded":
-            upload_app(openai=openai)
+            upload_app(openai=openai, devops=devops)
         elif app_mode == "IME Log Summarizer":
             summarize_logfile(openai=openai)
 
