@@ -2,8 +2,6 @@
 
 import os
 import streamlit as st
-from loguru import logger
-
 
 from modules.functions import Apps
 from modules.openai import OpenAi
@@ -80,9 +78,6 @@ def main():
             upload_app(openai=openai, blob=blob, bing=bing, openAi=openai)
         elif app_mode == "IME Log Summarizer":
             summarize_logfile(openai=openai)
-
-            # https://storeedgefd.dsx.mp.microsoft.com/v9.0/manifestSearch
-            # {"MaximumResults":50,"Filters":[{"PackageMatchField":"Market","RequestMatch":{"KeyWord":"US","MatchType":"CaseInsensitive"}}],"Query":{"KeyWord":"Green","MatchType":"Substring"}}
 
 
 if __name__ == "__main__":

@@ -16,8 +16,6 @@ from modules.graph import (
     add_assignment,
     remove_assignment,
     load_app_icon,
-    # get_group_members,
-    # create_group,
 )
 
 
@@ -37,18 +35,14 @@ class Apps:
         if st.session_state["apps"] is None:
             if st.button("Load Apps"):
                 try:
-                    st.session_state["apps"] = load_apps(
-                        access_token=self.access_token
-                    )
+                    st.session_state["apps"] = load_apps(access_token=self.access_token)
                     st.rerun()
                 except Exception as e:  # pylint: disable=broad-except
                     st.error(f"An error occurred: {e}")
         else:
             if st.button("Refresh Apps"):
                 try:
-                    st.session_state["apps"] = load_apps(
-                        access_token=self.access_token
-                    )
+                    st.session_state["apps"] = load_apps(access_token=self.access_token)
                     st.rerun()
                 except Exception as e:  # pylint: disable=broad-except
                     st.error(f"An error occurred: {e}")
@@ -70,8 +64,7 @@ class Apps:
     def get_app_installation_status(self, selected_app_id):
         """Get the installation status of a selected app"""
         return get_installation_status(
-            app_id=selected_app_id,
-            access_token=self.access_token
+            app_id=selected_app_id, access_token=self.access_token
         )
 
     def show_app_assignments(self, selected_app: dict):
@@ -79,8 +72,7 @@ class Apps:
         # Display current assignments
         st.write("### Assignments")
         assignments = get_app_assignments(
-            app_id=selected_app["id"],
-            access_token=self.access_token
+            app_id=selected_app["id"], access_token=self.access_token
         )
         if assignments:
             for assignment in assignments:
@@ -100,7 +92,7 @@ class Apps:
                     remove_assignment(
                         app_id=selected_app["id"],
                         assignment_id=assignment["id"],
-                        access_token=self.access_token
+                        access_token=self.access_token,
                     )
                     st.rerun()
         else:
@@ -114,10 +106,7 @@ class Apps:
         st.write("### Add Assignment")
         group_query = st.text_input("Search for Group")
         if group_query:
-            groups = search_groups(
-                query=group_query,
-                access_token=self.access_token
-            )
+            groups = search_groups(query=group_query, access_token=self.access_token)
             group_names = [group["displayName"] for group in groups]
             selected_group = st.selectbox("Select Group", group_names)
             if st.button("Add Assignment"):
@@ -133,7 +122,7 @@ class Apps:
                     add_assignment(
                         app_id=selected_app_id,
                         group_id=group_id,
-                        access_token=self.access_token
+                        access_token=self.access_token,
                     )
                     st.rerun()
 
@@ -141,8 +130,7 @@ class Apps:
         """Some apps have a large icon that can be displayed"""
         st.write("### Add details")
         app_icon = load_app_icon(
-            app_id=selected_app["id"],
-            access_token=self.access_token
+            app_id=selected_app["id"], access_token=self.access_token
         )
         if app_icon:
             large_icon_base64 = app_icon["value"]

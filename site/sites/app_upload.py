@@ -31,9 +31,10 @@ def upload_app(openai: OpenAi, blob: Blob, bing: Bing, openAi: OpenAi):
             container_name = "test"
             blob_name = uploaded_file.name
 
-            blob.upload_blob_bytes(
+            blob.upload_blob(
                 blob_name=blob_name,
                 data=bytes_data,
+                serialize=False,
             )
 
             description = generate_description(

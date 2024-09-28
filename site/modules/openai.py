@@ -10,7 +10,7 @@ class OpenAi:
         self,
         endpoint,
         key,
-        model,
+        model="gpt-4o",
     ):
         self.endpoint = endpoint
         self.key = key
@@ -48,7 +48,7 @@ class OpenAi:
         )
 
         completion = client.chat.completions.create(
-            model="gpt-4o",
+            model=self.model,
             temperature=temperature,
             messages=messages,
             max_tokens=max_tokens,
