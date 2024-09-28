@@ -5,3 +5,4 @@ __pycache__
 .streamlit/config.toml
 .DS_Store
 .conda
+test.py
