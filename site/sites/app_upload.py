@@ -2,24 +2,19 @@
 
 import os
 
-from azure.storage.blob import BlobServiceClient
-
-
 import streamlit as st
 from loguru import logger
-
-
-import os
-import streamlit as st
-from azure.storage.blob import BlobServiceClient
-
+from modules.blob import Blob
+from modules.bing import Bing
 from modules.openai import OpenAi
 
+from modules.openai import OpenAi
+from .app_description import generate_description
 
-def upload_app(openai: OpenAi):
+
+def upload_app(openai: OpenAi, blob: Blob, bing: Bing, openAi: OpenAi):
     """Upload app to Intune"""
     st.subheader("App package upload")
-    CONNECTION_STRING = st.secrets["STORAG_CONNECTION_STRING"]
     uploaded_file = st.file_uploader("Choose a file")
 
     installation_type = st.radio(
@@ -32,23 +27,44 @@ def upload_app(openai: OpenAi):
         if st.button("Upload"):
             # To read file as bytes:
             bytes_data = uploaded_file.getvalue()
-            st.write(bytes_data)
 
             container_name = "test"
-
             blob_name = uploaded_file.name
-            blob_service_client = BlobServiceClient.from_connection_string(
-                CONNECTION_STRING
+
+            blob.upload_blob_bytes(
+                blob_name=blob_name,
+                data=bytes_data,
             )
-            container_client = blob_service_client.get_container_client(container_name)
-            blob_client = container_client.get_blob_client(blob_name)
-            blob_client.upload_blob(bytes_data, overwrite=True)
 
-
+            description = generate_description(
+                bing=bing,
+                openAi=openAi,
+                display_name=blob_name,
+                app_type="win32",
+                description="",
+            )
 
             content_json = {
-                "displayName": "",
-                "description": "",
+                "displayName": blob_name,
+                "description": description,
                 "publisher": "",
                 "vendorUrl": "",
+                "installationType": installation_type,
             }
+            blob.upload_blob(
+                blob_name="definition.json",
+                data=content_json,
+            )
+
+            system = """ You are an Senior Intune App Administrator. Your job is to answer with an valid powershell script to install the following app."""
+            prompt = f"""The app is called {blob_name}.
+            Only answer with code and nothing else. It should be an valid installation script for the app.
+            """
+            script = openAi.open_ai_run(prompt=prompt, system=system)
+
+            blob.upload_blob(
+                blob_name="installation.ps1",
+                data=script,
+            )
+
+            st.write(f"File uploaded to {blob_name}")

@@ -77,7 +77,7 @@ def main():
         elif app_mode == "App Description Creator":
             optimize_app_description(apps=apps, bing=bing, openAi=openai)
         elif app_mode == "App Uploaded":
-            upload_app(openai=openai)
+            upload_app(openai=openai, blob=blob, bing=bing, openAi=openai)
         elif app_mode == "IME Log Summarizer":
             summarize_logfile(openai=openai)
 
